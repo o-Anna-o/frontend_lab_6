@@ -1,3 +1,4 @@
+// src/components/Navbar.tsx
 import React, { useEffect, useState } from 'react'
 
 const CART_ICON_BASE64 = 'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAn0lEQVR4nO3QMQ4BURSF4ckUEol1qGgobIGFaaxIi0ah0lAohE0QkU9GRvcGY15iIv72nXv+d2+S/BzoYq08a3RelTex8zl7tJ4JxnlwhbTE1imW+eykKNTGCVcM3i1/gH4+e0EvFJiKxywkyH4fi3NIcCepiKKerwnQwDZwhkVMwSYgmEcRlOUveMlfUG/BUTwOIcEoe4hRjmHVS9SHGxku7S0HDKVsAAAAAElFTkSuQmCC'
@@ -7,7 +8,13 @@ export default function Navbar(){
   const [requestId, setRequestId] = useState<number|null>(null)
 
   async function fetchBasket() {
-      console.log('[DEBUG Navbar] token=', localStorage.getItem('lt_token'))
+
+    const token = localStorage.getItem('lt_token')
+      if (!token) {
+      setCount(null)
+      setRequestId(null)
+      return
+    }
 
     try {
       const res = await fetch('/api/request_ship/basket')
