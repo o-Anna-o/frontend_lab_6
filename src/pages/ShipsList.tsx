@@ -1,6 +1,5 @@
 // src/pages/ShipsList.tsx
-
-import React from 'react'
+import React, { useEffect } from 'react'
 import Navbar from '../components/Navbar'
 import Breadcrumbs from '../components/Breadcrumbs'
 import ShipCard from '../components/ShipCard'
@@ -12,6 +11,11 @@ export default function ShipsList() {
   const dispatch = useAppDispatch()
   const search = useAppSelector(state => state.filter.search)
   const appliedSearch = useAppSelector(state => state.filter.appliedSearch)
+
+  // при загрузке/возврате синхронизируем input со значением appliedSearch
+  useEffect(() => {
+    dispatch(setSearch(appliedSearch))
+  }, [appliedSearch, dispatch])
 
   const { ships, loading, error } = useShips(appliedSearch)
 
@@ -63,10 +67,7 @@ export default function ShipsList() {
                 s.ID
 
               return (
-                <div
-                  key={id}
-                  style={{ display: 'flex', justifyContent: 'center' }}
-                >
+                <div key={id} style={{ display: 'flex', justifyContent: 'center' }}>
                   <ShipCard ship={s} />
                 </div>
               )

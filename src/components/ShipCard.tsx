@@ -1,17 +1,18 @@
+// src/components/ShipCard.tsx
 import React from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import defaultImg from '../assets/default.png'
 import { addShipToRequest } from '../api'
 import { getToken } from '../auth'
-import { useNavigate } from 'react-router-dom'
 
 export default function ShipCard({ ship }: { ship: any }) {
   const buildImgSrc = (p?: string | null) => {
     if (!p) return defaultImg
     try { new URL(p); return p }
-    catch(e) { return 'http://localhost:9000/loading-time-img/img/' + p }
+    catch (e) { return 'http://localhost:9000/loading-time-img/img/' + p }
   }
   const src = buildImgSrc(ship.photo_url ?? ship.PhotoURL)
-  const id = ship.ship_id ?? ship.ShipID
+  const id = ship.ship_id ?? ship.ShipID ?? ship.id ?? ship.ID
   const name = ship.name ?? ship.Name
   const capacity = ship.capacity ?? ship.Capacity
   const cranes = ship.cranes ?? ship.Cranes
@@ -32,7 +33,6 @@ export default function ShipCard({ ship }: { ship: any }) {
     }
   }
 
-  // проверка на авторизованность
   const token = getToken()
   const isAuthenticated = Boolean(token)
 
@@ -42,7 +42,9 @@ export default function ShipCard({ ship }: { ship: any }) {
         <img src={src} alt={name} style={{ maxWidth:'100%', maxHeight:318, objectFit:'contain' }} onError={(e:any)=>{ e.target.style.display='none' }} />
       </div>
 
-      <h2><a href={'/ship/' + id} style={{ color:'#fff', textDecoration:'none' }}>{name}</a></h2>
+      <h2>
+        <Link to={'/ship/' + id} style={{ color:'#fff', textDecoration:'none' }}>{name}</Link>
+      </h2>
 
       <div className="ship-item-text" style={{ width:489, textAlign:'left', display:'flex', flexDirection:'column', gap:18 }}>
         <p><b>Вместимость:</b> {capacity} TEU</p>

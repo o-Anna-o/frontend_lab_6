@@ -54,8 +54,7 @@ export function useShips(appliedSearch?: string) {
         }
 
         if (!cancelled) setShips(arr)
-        // ❗ Ошибку НЕ показываем на странице
-        // if (!cancelled) setError("...")
+          
       } finally {
         if (!cancelled) setLoading(false)
       }
@@ -65,5 +64,5 @@ export function useShips(appliedSearch?: string) {
     return () => { cancelled = true }
   }, [appliedSearch])
 
-  return { ships, loading, error, setShips }
+  return { ships, loading, error }
 }
