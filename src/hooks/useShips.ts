@@ -1,71 +1,55 @@
 // src/hooks/useShips.ts
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getShips, ShipsFilterParams } from '../api'
 
 type UseShipsArg = string | ShipsFilterParams | undefined
+
+type ShipForFilter = { Name?: string; [key: string]: any }
 
 export function useShips(param?: UseShipsArg) {
   const [ships, setShips] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const paramRef = useRef<UseShipsArg>(param)
-  const fetchIdRef = useRef(0)
-
   function normalize(p: UseShipsArg): ShipsFilterParams | undefined {
-    if (!p) return undefined
+    if (!p) return {} // пустой объект для fetch всех кораблей
     if (typeof p === 'string') {
       const st = p.trim()
-      return st ? { search: st } : undefined
+      return st ? { search: st } : {}
     }
     return p
   }
 
-  // keep paramRef in sync
   useEffect(() => {
-    paramRef.current = param
-  }, [param])
-
-  useEffect(() => {
+    if (param === undefined) return
     let cancelled = false
-    const fetchId = ++fetchIdRef.current
+    const params = normalize(param)
 
-    const timer = setTimeout(() => {
-      (async () => {
-        setLoading(true)
-        setError(null)
-        try {
-          const params = normalize(paramRef.current)
-          console.log('[useShips] load with params:', params)
-          const res = await getShips(params)
-          console.log("🚢 API RAW RESPONSE:", res)
+    const fetchShips = async () => {
+      setLoading(true)
+      setError(null)
+      try {
+        const res = await getShips(params)
+        let arr = Array.isArray(res) ? res : res?.data ?? res ?? []
+        if (!Array.isArray(arr)) arr = []
 
-          if (cancelled || fetchId !== fetchIdRef.current) return
-          const arr = Array.isArray(res) ? res : (res?.data ?? res ?? [])
-          let result = Array.isArray(arr) ? arr : []
-          
-          // дополнительная фильтрация на фронтенде:
-          if (params?.search) {
-            const searchLower = params.search.toLowerCase()
-            result = result.filter(ship =>
-              typeof ship.Name === 'string' && ship.Name.toLowerCase().includes(searchLower)
-            )
-          }
-
-          setShips(result)
-        } catch (e: any) {
-          if (!cancelled) setError(String(e?.message ?? e))
-        } finally {
-          if (!cancelled) setLoading(false)
+        if (params?.search) {
+          const searchLower = params.search.toLowerCase()
+          arr = arr.filter(
+            (ship: ShipForFilter) => typeof ship.Name === 'string' && ship.Name.toLowerCase().includes(searchLower)
+          )
         }
-      })()
-    }, 250)
 
-    return () => {
-      cancelled = true
-      clearTimeout(timer)
+        if (!cancelled) setShips(arr)
+      } catch (e: any) {
+        if (!cancelled) setError(String(e?.message ?? e))
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
     }
-   
+
+    fetchShips()
+    return () => { cancelled = true }
   }, [param])
 
   return { ships, loading, error, setShips }

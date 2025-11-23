@@ -1,28 +1,28 @@
-// src/store/filterSlice.ts
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+// src/store/slices/filterSlice.ts
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-export interface FilterState {
-  search: string;
+interface FilterState {
+  search: string
+  lastSearch: string
 }
 
 const initialState: FilterState = {
   search: '',
-};
+  lastSearch: '' // последний search, по которому сделали fetch
+}
 
-const filterSlice = createSlice({
+export const filterSlice = createSlice({
   name: 'filter',
   initialState,
   reducers: {
-    // Устанавливает строку поиска
     setSearch(state, action: PayloadAction<string>) {
-      state.search = action.payload;
+      state.search = action.payload
     },
-    // Сбрасывает поле поиска
-    clearSearch(state) {
-      state.search = '';
-    },
-  },
-});
+    setLastSearch(state, action: PayloadAction<string>) {
+      state.lastSearch = action.payload
+    }
+  }
+})
 
-export const { setSearch, clearSearch } = filterSlice.actions;
-export default filterSlice.reducer;
+export const { setSearch, setLastSearch } = filterSlice.actions
+export default filterSlice.reducer
