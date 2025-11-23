@@ -2,23 +2,23 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface FilterState {
-  search: string
-  lastSearch: string
+  search: string         // то, что в input
+  lastSearch: string     // то, по чему делался fetch
 }
 
 const initialState: FilterState = {
   search: '',
-  lastSearch: '' // последний search, по которому сделали fetch
+  lastSearch: ''
 }
 
 export const filterSlice = createSlice({
   name: 'filter',
   initialState,
   reducers: {
-    setSearch(state, action: PayloadAction<string>) {
+    setSearch: (state, action: PayloadAction<string>) => {
       state.search = action.payload
     },
-    setLastSearch(state, action: PayloadAction<string>) {
+    setLastSearch: (state, action: PayloadAction<string>) => {
       state.lastSearch = action.payload
     }
   }
