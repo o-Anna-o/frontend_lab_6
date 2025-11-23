@@ -1,28 +1,27 @@
-// src/store/slices/filterSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface FilterState {
-  search: string         // то, что в input
-  lastSearch: string     // то, по чему делался fetch
+  search: string
+  appliedSearch: string
 }
 
 const initialState: FilterState = {
   search: '',
-  lastSearch: ''
+  appliedSearch: ''
 }
 
-export const filterSlice = createSlice({
+const filterSlice = createSlice({
   name: 'filter',
   initialState,
   reducers: {
-    setSearch: (state, action: PayloadAction<string>) => {
+    setSearch(state, action: PayloadAction<string>) {
       state.search = action.payload
     },
-    setLastSearch: (state, action: PayloadAction<string>) => {
-      state.lastSearch = action.payload
+    applySearch(state) {
+      state.appliedSearch = state.search
     }
   }
 })
 
-export const { setSearch, setLastSearch } = filterSlice.actions
+export const { setSearch, applySearch } = filterSlice.actions
 export default filterSlice.reducer

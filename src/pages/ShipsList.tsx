@@ -1,18 +1,22 @@
-// src/pages/ShipsList.tsx
-import ShipCard from '../components/ShipCard'
-import { useShips } from '../hooks/useShips'
+import React from 'react'
 import Navbar from '../components/Navbar'
 import Breadcrumbs from '../components/Breadcrumbs'
-import React from 'react'
+import ShipCard from '../components/ShipCard'
+import { useShips } from '../hooks/useShips'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
-import { setSearch, setLastSearch } from '../store/slices/filterSlice'
+import { setSearch, applySearch } from '../store/slices/filterSlice'
 
 export default function ShipsList() {
   const dispatch = useAppDispatch()
-  const search = useAppSelector((state) => state.filter.search)
-  const lastSearch = useAppSelector((state) => state.filter.lastSearch || undefined)
+  const search = useAppSelector(state => state.filter.search)
+  const appliedSearch = useAppSelector(state => state.filter.appliedSearch)
 
-  const { ships } = useShips(lastSearch)
+  const { ships, loading, error } = useShips(appliedSearch)
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    dispatch(applySearch()) // только применяем текущее search
+  }
 
   return (
     <>
@@ -22,24 +26,23 @@ export default function ShipsList() {
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <form
           className="page__search"
-          onSubmit={(e) => {
-            e.preventDefault()
-            dispatch(setLastSearch(search))
-          }}
+          onSubmit={handleSubmit}
           style={{ marginTop: 10 }}
         >
           <input
             className="search-input page__search-input page__search-item"
             type="text"
-            name="search"
             placeholder="Поиск контейнеровоза"
-            value={search}
-            onChange={(e) => dispatch(setSearch(e.target.value))}
+            value={search} 
+            onChange={e => dispatch(setSearch(e.target.value))} 
           />
           <button className="btn search-btn page__search-item" type="submit">
             Найти
           </button>
         </form>
+
+        {loading && <div style={{ marginTop: 20 }}>Загрузка...</div>}
+        {error && <div style={{ marginTop: 20, color: 'red' }}>{error}</div>}
 
         <ul className="ship-cards" style={{ listStyle: 'none', padding: 0, marginTop: 20 }}>
           <div
@@ -47,7 +50,7 @@ export default function ShipsList() {
               display: 'grid',
               gridTemplateColumns: 'repeat(2, 1fr)',
               gap: 28,
-              justifyContent: 'center'
+              justifyContent: 'center',
             }}
           >
             {ships.map((s) => (

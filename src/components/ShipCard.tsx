@@ -1,5 +1,7 @@
+// src/pages/ShipCard.tsx
+
 import React from 'react'
-import defaultImg from '../assets/default-ship.png'
+import defaultImg from '../assets/default.png'
 import { addShipToRequest } from '../api'
 import { getToken } from '../auth'
 import { useNavigate } from 'react-router-dom'

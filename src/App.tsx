@@ -8,9 +8,10 @@ import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import HomePage from './pages/HomePage'
 
+
 export default function App(){
   return (
-    <BrowserRouter>
+    <BrowserRouter>  {/*<BrowserRouter basename="/frontend">*/}
     
       <div className="page-content" style={{ marginTop: '20px' }}> 
         <Routes>
