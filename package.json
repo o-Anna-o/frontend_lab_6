@@ -1,8 +1,8 @@
 {
-  "name": "loading-time-frontend",
+  "name": "frontend_lab_6",
   "version": "0.0.0",
   "private": true,
-  "homepage": "https://o-anna-o.github.io/loading-time-frontend/",
+  "homepage": "https://o-anna-o.github.io/frontend_lab_6/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

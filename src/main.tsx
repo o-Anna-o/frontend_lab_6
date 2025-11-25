@@ -16,7 +16,7 @@ import routes from './App'
 import React from 'react'
 
 const router = createBrowserRouter(routes, {
-  basename: '/loading-time-frontend/'
+  basename: '/frontend_lab_6/'
 })
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -26,3 +26,12 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     </Provider>
   </React.StrictMode>
 )
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/frontend_lab_6/service-worker.js")
+      .then(reg => console.log("Service worker registered:", reg))
+      .catch(err => console.error("SW registration failed:", err));
+  });
+}
